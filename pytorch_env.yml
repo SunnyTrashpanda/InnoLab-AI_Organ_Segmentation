@@ -1,4 +1,4 @@
-name: neuer_test
+name: pytorch_env
 channels:
   - pytorch
   - defaults
