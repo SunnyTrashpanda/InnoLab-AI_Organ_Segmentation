@@ -20,5 +20,5 @@
    pytorch_env.yml - file herunterladen
   
 ```
-  conda env update --prefix ./env --file environment.yml  --prune 
+  conda env update --prefix ./env --file pytorch_env.yml  --prune 
 ```
