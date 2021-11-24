@@ -9,6 +9,12 @@
   conda activate pytorch_env
 ```
 
+**Zur Überprüfung ob das environment richtig erstellt wurde:**
+
+```
+  conda env list
+```
+
 **Environment mit .yml-Datei aktualisieren:**
 
    pytorch_env.yml - file herunterladen
