@@ -1,5 +1,5 @@
 # InnoLab-AI_Organ_Segmentation<br/><br/>
-***Environment erstellen (bei Ersterstellung):***
+**Environment erstellen (bei Ersterstellung):**
   
    pytorch_env.yml - file herunterladen
   
@@ -7,14 +7,14 @@
   conda env create -f pytorch_env.yml
   conda activate pytorch_env
 ```
-<br/>
-**Zur Überprüfung ob das environment richtig erstellt wurde:**
+
+<br/>**Zur Überprüfung ob das environment richtig erstellt wurde:**
 
 ```
   conda env list
 ```
-<br/>
-**Environment umbenennen:**
+
+<br/>**Environment umbenennen:**
 ```
 conda create --name pytorch_env --clone neuer_test --offline
 ```
@@ -23,8 +23,8 @@ Nur wenn bei ```conda env list``` das environment _pytorch_env_ existiert:
 ```
 conda env remove --name neuer_test
 ```
-<br/>
-**Environment mit .yml-Datei aktualisieren:**
+
+<br/><br/>**Environment mit .yml-Datei aktualisieren:**
 
    pytorch_env.yml - file herunterladen
   
