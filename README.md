@@ -31,3 +31,10 @@ conda env remove --name neuer_test
 ```
   conda env update --prefix ./env --file pytorch_env.yml  --prune 
 ```
+
+<br/>**Environment in .yml-Datei speichern:**
+Mit ```conda env list``` sicherstellen, dass das pytorch_env aktiv ist.
+  
+```
+  conda env export > pytorch_env.yml
+```
