@@ -15,6 +15,16 @@
   conda env list
 ```
 
+**Environment umbenennen:**
+```
+conda create --name pytorch_env --clone neuer_test --offline
+```
+Überprüfe ob das environment erstellt wurde
+...dann
+```
+conda env remove --name neuer_test
+```
+
 **Environment mit .yml-Datei aktualisieren:**
 
    pytorch_env.yml - file herunterladen
