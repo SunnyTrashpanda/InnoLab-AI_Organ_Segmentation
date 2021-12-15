@@ -22,12 +22,8 @@
 ```
 conda create --name pytorch_env --clone neuer_test --offline
 ```
-Überprüfe ob das environment _pytorch_env_ erstellt wurde.
-Wenn der Stern bei ```conda env list``` bei _neuer_test_ ist:
-```
-conda deactivate
-```
-dann:
+Wenn der Stern bei ```conda env list``` bei _neuer_test_ ist: ```conda deactivate```
+Nur wenn bei ```conda env list``` das environment _pytorch_env_ existiert:
 ```
 conda env remove --name neuer_test
 ```
