@@ -8,13 +8,13 @@
   conda activate pytorch_env
 ```
 
-<br/>**Zur Überprüfung ob das environment richtig erstellt wurde:**
+<br/><br/>**Zur Überprüfung ob das environment richtig erstellt wurde:**
 
 ```
   conda env list
 ```
 
-<br/>**Environment umbenennen:**
+<br/><br/>**Environment umbenennen:**
 ```
 conda create --name pytorch_env --clone neuer_test --offline
 ```
