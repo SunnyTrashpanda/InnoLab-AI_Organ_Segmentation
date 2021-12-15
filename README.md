@@ -19,8 +19,7 @@
 ```
 conda create --name pytorch_env --clone neuer_test --offline
 ```
-Überprüfe ob das environment erstellt wurde
-...dann
+Überprüfe ob das environment erstellt wurde....dann
 ```
 conda env remove --name neuer_test
 ```
