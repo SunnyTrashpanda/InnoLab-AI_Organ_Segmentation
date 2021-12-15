@@ -8,13 +8,13 @@
   conda activate pytorch_env
 ```
 
-<br/><br/>**Zur Überprüfung ob das environment richtig erstellt wurde:**
+<br/>**Zur Überprüfung ob das environment richtig erstellt wurde:**
 
 ```
   conda env list
 ```
 
-<br/><br/>**Environment umbenennen:**
+<br/>**Environment umbenennen:**
 ```
 conda create --name pytorch_env --clone neuer_test --offline
 ```
@@ -24,7 +24,7 @@ Nur wenn bei ```conda env list``` das environment _pytorch_env_ existiert:
 conda env remove --name neuer_test
 ```
 
-<br/><br/>**Environment mit .yml-Datei aktualisieren:**
+<br/>**Environment mit .yml-Datei aktualisieren:**
 
    pytorch_env.yml - file herunterladen
   
