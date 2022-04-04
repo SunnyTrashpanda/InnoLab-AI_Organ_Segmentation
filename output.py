@@ -21,6 +21,11 @@ from glob import glob
 import numpy as np
 from monai.inferers import sliding_window_inference
 
+# in diesem file passiert fast das gleiche wie in dem anderen,
+# das file dient aber eigentlich nur dazu die segmentierung als img auszugeben uns zu sehen wie schlecht unser model ist XD
+# (das ganze file sollte eve als jupyter notebook datei mal umgewandelt werden,
+# damit man sich plotings und so leichter ansehen kann)
+# also laden wir die daten
 in_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\data\\testRun1'
 model_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\results'
 
@@ -28,6 +33,7 @@ train_loss = np.load(os.path.join(model_dir, 'loss_train.npy'))
 train_metric = np.load(os.path.join(model_dir, 'metric_train.npy'))
 validation_loss = np.load(os.path.join(model_dir, 'loss_validation.npy'))
 validation_metric = np.load(os.path.join(model_dir, 'metric_validation.npy'))
+# plottings haben wir einfach mal auskommentiert helfen aber auch die daten anzusehen
 '''
 plt.figure("Results 25 june", (12, 6))
 plt.subplot(2, 2, 1)
@@ -60,16 +66,17 @@ plt.plot(x, y)
 
 plt.show()
 '''
+# hier werden auch wieder die files ausgewählt
 path_train_volumes = sorted(glob(in_dir + "\\imagesTr\\**\\*.nii"))
 path_train_segmentation = sorted(glob(in_dir + "\\labelsTr\\**\\*.nii"))
 
 path_validation_volumes = sorted(glob(in_dir + "\\imagesTest\\**\\*.nii"))
 path_validation_segmentation = sorted(glob(in_dir + "\\labelsTest\\**\\*.nii"))
 
-train_files = [{"vol": image_name, "seg": label_name} for image_name, label_name in zip(path_train_volumes, path_train_segmentation)]
+
 validation_files = [{"vol": image_name, "seg": label_name} for image_name, label_name in zip(path_validation_volumes, path_validation_segmentation)]
 validation_files = validation_files[0:9]
-
+# die transforms sind hier gleich
 validation_transforms = Compose(
     [
         LoadImaged(keys=["vol", "seg"]),
@@ -82,10 +89,12 @@ validation_transforms = Compose(
         ToTensord(keys=["vol", "seg"]),
     ]
 )
+# auch wieder daten laden
 validation_ds = Dataset(data=validation_files, transform=validation_transforms)
 validation_loader = DataLoader(validation_ds, batch_size=1)
-
+# aug gpu berechnen
 device = torch.device("cuda:0")
+# model definieren
 model = UNet(
     dimensions=3,
     in_channels=1,
@@ -95,14 +104,15 @@ model = UNet(
     num_res_units=2,
     norm=Norm.BATCH,
 ).to(device)
-
+# anders als beim training wollen wir hier hald das gespeicherte model verwenden
 model.load_state_dict(torch.load(
     os.path.join(model_dir, "best_metric_model.pth")))
 model.eval()
 
 sw_batch_size = 4
 roi_size = (128, 128, 512)
-
+# das ganze4 danach geht einfach nur durch und zeigt uns die Ergebnise
+# die Ausgabe zeigt dann immer die zusammengehörigen labels, das unlabelt sowie das vom model segmentierte img
 with torch.no_grad():
     validation_patient = first(validation_loader)
     t_volume = validation_patient["vol"]
