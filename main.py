@@ -19,6 +19,7 @@ from monai.networks.layers import Norm
 from monai.losses import DiceLoss
 import torch
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 '''
     Hier ist ein video das ein wenig über monai erklärt (dauert ca 38min):
@@ -72,8 +73,11 @@ path_train_segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
 path_validation_volumes = sorted(glob.glob(in_dir + "\\imagesTest\\**\\*.nii"))
 path_validation_segmentation = sorted(glob.glob(in_dir + "\\labelsTest\\**\\*.nii"))
 # hier rufen wir dann Clemens funktion auf damit wir uns nicht darum scheren müssen ob alle images label haben
-train_files = match_image_with_label(path_train_volumes, path_train_segmentation)
-validation_files = match_image_with_label(path_validation_volumes, path_validation_segmentation)
+all_files = match_image_with_label(volumes, segmentation)
+
+# train test split funktion von sklearn (eigentlich train validation split, test fehlt)
+train_files, validation_files = train_test_split(all_files, test_size=0.33, random_state=42)
+
 
 # print(train_files)
 # print(validation_files)
@@ -134,8 +138,15 @@ model_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\
 # damit sagen wir das wir auf dem gpu rechnen wollen ( achtung nicht mit allen grafikkarten kompatibel!!!)
 device = torch.device("cuda:0")
 # hier wird das UNet model definiert, auch hier bin ich nicht sicher was die einzelnen sachen genau aussagen
+'''
+ Layer aber warum 2 ouput channel? eve wegen dem label?
+ down/upsampeling by factor 2 (stride 2)
+ sind die convolutions pro layer
+ dimentions hab ich zu spatial_dims geändert weils die neuere version ist
+'''
+
 model = UNet(
-    dimensions=3,
+    spatial_dims=3,
     in_channels=1,
     out_channels=2,
     channels=(16, 32, 64, 128, 256),
@@ -148,7 +159,7 @@ model = UNet(
 loss = DiceLoss(to_onehot_y=True, sigmoid=True, squared_pred=True)
 optim = torch.optim.Adam(model.parameters(), 1e-5, weight_decay=1e-5, amsgrad=True)
 # die brauchen wir dann weiter unten
-max_epochs = 3
+max_epochs = 1
 validation_interval = 1
 
 # training part
