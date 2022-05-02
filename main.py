@@ -66,12 +66,10 @@ in_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\da
 
 # path to data
 # glob hilft uns die unterschiedlich benannten files zu selecten
-path_train_volumes = sorted(glob.glob(in_dir + "\\imagesTr\\**\\*.nii"))
-path_train_segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
+volumes = sorted(glob.glob(in_dir + "\\imagesTr\\**\\*.nii"))
+segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
 # "\\labelsTr\\*.nii.gz" funktioniert auch --> datensparender aber noch unsicher wegen umgang mit daten
 
-path_validation_volumes = sorted(glob.glob(in_dir + "\\imagesTest\\**\\*.nii"))
-path_validation_segmentation = sorted(glob.glob(in_dir + "\\labelsTest\\**\\*.nii"))
 # hier rufen wir dann Clemens funktion auf damit wir uns nicht darum scheren müssen ob alle images label haben
 all_files = match_image_with_label(volumes, segmentation)
 
