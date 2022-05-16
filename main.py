@@ -74,7 +74,7 @@ segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
 all_files = match_image_with_label(volumes, segmentation)
 
 # train test split funktion von sklearn (eigentlich train validation split, test fehlt)
-train_files, validation_files = train_test_split(all_files, test_size=0.33, random_state=42)
+train_files, validation_files = train_test_split(all_files, test_size=0.2, random_state=42)
 
 
 # print(train_files)
@@ -152,6 +152,10 @@ model = UNet(
     num_res_units=2,
     norm=Norm.BATCH,
 ).to(device)
+
+model.load_state_dict(torch.load(
+    os.path.join(model_dir, "C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\results\\best_metric_model.pth")))
+model.eval()
 
 # hier wird der optimization alg. sowie die metric als variable gesetzt
 loss = DiceLoss(to_onehot_y=True, sigmoid=True, squared_pred=True)
