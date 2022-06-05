@@ -62,19 +62,19 @@ def dice_metric(predicted, target):
 set_determinism(seed=0)
 
 # in_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\data\\KiTS-20210922T123706Z-001'
-in_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\data\\testRun1'
+in_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\data\\KiTS-20210922T123706Z-001'
 
 # path to data
 # glob hilft uns die unterschiedlich benannten files zu selecten
-volumes = sorted(glob.glob(in_dir + "\\imagesTr\\**\\*.nii"))
-segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
+volumes = sorted(glob.glob(in_dir + "\\images\\**\\*.nii"))
+segmentation = sorted(glob.glob(in_dir + "\\labels\\**\\*.nii"))
 # "\\labelsTr\\*.nii.gz" funktioniert auch --> datensparender aber noch unsicher wegen umgang mit daten
 
 # hier rufen wir dann Clemens funktion auf damit wir uns nicht darum scheren müssen ob alle images label haben
 all_files = match_image_with_label(volumes, segmentation)
 
 # train test split funktion von sklearn (eigentlich train validation split, test fehlt)
-train_files, validation_files = train_test_split(all_files, test_size=0.2, random_state=42)
+train_files, validation_files = train_test_split(all_files, test_size=0.2, random_state=42, shuffle=True)
 
 
 # print(train_files)
@@ -87,6 +87,8 @@ a_min = -200
 spatial_size = [128, 128, 64]
 pixdim = (1.5, 1.5, 1.0)
 
+# damit sagen wir das wir auf dem gpu rechnen wollen ( achtung nicht mit allen grafikkarten kompatibel!!!)
+device = torch.device("cuda:0")
 # training set
 # transforms sind die filter die wir pro image anwenden um sie leichter erkenntba für das model zu machen
 # (wenn man die abgiebt erkennen wir meistens nix brauchbares)
@@ -102,7 +104,7 @@ train_transforms = Compose(
         # hier leider auch keinen plan
         CropForegroundd(keys=["vol", "seg"], source_key="vol"),  # ebenso wie hier (sorry XD)
         Resized(keys=["vol", "seg"], spatial_size=spatial_size),  # in einheitliche größe bringen
-        ToTensord(keys=["vol", "seg"]),  # am schluss in einen tensor umwandeln
+        ToTensord(keys=["vol", "seg"], device=device),  # am schluss in einen tensor umwandeln
     ]
 )
 
@@ -120,7 +122,7 @@ validation_transforms = Compose(
         ScaleIntensityRanged(keys=["vol"], a_min=a_min, a_max=a_max, b_min=0.0, b_max=1.0, clip=True),
         CropForegroundd(keys=['vol', 'seg'], source_key='vol'),
         Resized(keys=["vol", "seg"], spatial_size=spatial_size),
-        # ToTensord(keys=["vol", "seg"]),
+        ToTensord(keys=["vol", "seg"], device=device),
 
     ]
 )
@@ -133,8 +135,7 @@ validation_loader = DataLoader(validation_ds, batch_size=1)
 
 # data_dir = 'D:/Youtube/Organ and Tumor Segmentation/datasets/Task03_Liver/Data_Train_Test'
 model_dir = 'C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\results'
-# damit sagen wir das wir auf dem gpu rechnen wollen ( achtung nicht mit allen grafikkarten kompatibel!!!)
-device = torch.device("cuda:0")
+
 # hier wird das UNet model definiert, auch hier bin ich nicht sicher was die einzelnen sachen genau aussagen
 '''
  Layer aber warum 2 ouput channel? eve wegen dem label?
@@ -193,7 +194,7 @@ for epoch in range(max_epochs):
         # wenn das label nicht gleich 0 ist
         label = batch_data["seg"]
         label = label != 0
-        volume, label = (volume.to(device), label.to(device))
+        volume, label = (volume.to(device, non_blocking=True), label.to(device, non_blocking=True))
 
         optim.zero_grad()
         outputs = model(volume)
@@ -247,7 +248,7 @@ for epoch in range(max_epochs):
                 validation_volume = validation_data["vol"]
                 validation_label = validation_data["seg"]
                 validation_label = validation_label != 0
-                validation_volume, validation_label = (validation_volume.to(device), validation_label.to(device),)
+                validation_volume, validation_label = (validation_volume.to(device, non_blocking=True), validation_label.to(device, non_blocking=True))
 
                 validation_outputs = model(validation_volume)
 
