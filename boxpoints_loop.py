@@ -37,7 +37,7 @@ print("all files: ", len(all_files))
 
 '''----------------Load the NiFTI scan and extract the scan’s data array----------------------------'''
 
-for i in range(0, 5):
+for i in range(0, 69):
     scanFilePath = all_files[i].get("vol")
     #scanFilePath = all_files[0].get("vol")
     print("scanfilepath: ", scanFilePath)
@@ -177,10 +177,10 @@ for i in range(0, 5):
         key = cv2.waitKey(1) & 0xFF
     print('Here are points:', x1, y1, x2, y2)
     if key == ord('w'):
-        cv2.imwrite('snap' + repr(i) + '.png', img2[y1:y2, x1:x2])
+        #cv2.imwrite('snap' + repr(i) + '.png', img2[y1:y2, x1:x2])
         cv2.destroyAllWindows()
-        print('Saved as snap.png')
-        #os.remove('monitor-1.png')
+        #print('Saved as snap.png')
+        os.remove('monitor-1.png')
 
 
     '''-----------------------save points to csv file----------------------'''
