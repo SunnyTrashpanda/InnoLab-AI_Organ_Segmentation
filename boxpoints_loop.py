@@ -2,7 +2,6 @@ import csv
 import glob
 import os
 
-import cv
 import cv2
 import mss.tools
 import nibabel as nib
@@ -23,7 +22,7 @@ def match_image_with_label(volumes_path, segmentation_path):
 
     return image_dict
 
-in_dir = r'C:\Users\angel\Documents\fhtw\inno\guitest_boundingbox\KiTS\KiTS-20210922T123706Z-004\KiTS'
+in_dir = r'C:\Users\angel\Documents\fhtw\inno\guitest_boundingbox\KiTS'
 
 # path to data
 # glob hilft uns die unterschiedlich benannten files zu selecten
@@ -33,7 +32,8 @@ segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
 
 # hier rufen wir dann Clemens funktion auf damit wir uns nicht darum scheren müssen ob alle images label haben
 all_files = match_image_with_label(volumes, segmentation)
-print("all files: ", all_files)
+#print("all files: ", all_files)
+print("all files: ", len(all_files))
 
 '''----------------Load the NiFTI scan and extract the scan’s data array----------------------------'''
 
