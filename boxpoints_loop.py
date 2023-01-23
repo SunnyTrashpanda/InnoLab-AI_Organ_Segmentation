@@ -1,14 +1,12 @@
 import csv
 import glob
 import os
-
 import cv2
 import mss.tools
 import nibabel as nib
 from matplotlib import pyplot as plt
 from pynput import keyboard
 from pynput import mouse
-import re
 
 '''----------------code snippets of our boxpoints.py file----------------------------'''
 
@@ -25,21 +23,18 @@ def match_image_with_label(volumes_path, segmentation_path):
 in_dir = r'C:\Users\angel\Documents\fhtw\inno\guitest_boundingbox\KiTS'
 
 # path to data
-# glob hilft uns die unterschiedlich benannten files zu selecten
+# glob helps selecting different names of files
 volumes = sorted(glob.glob(in_dir + "\\imagesTr\\**\\*.nii"))
 segmentation = sorted(glob.glob(in_dir + "\\labelsTr\\**\\*.nii"))
-# "\\labelsTr\\*.nii.gz" funktioniert auch --> datensparender aber noch unsicher wegen umgang mit daten
 
-# hier rufen wir dann Clemens funktion auf damit wir uns nicht darum scheren müssen ob alle images label haben
+# only select images with matching labels
 all_files = match_image_with_label(volumes, segmentation)
-#print("all files: ", all_files)
 print("all files: ", len(all_files))
 
 '''----------------Load the NiFTI scan and extract the scan’s data array----------------------------'''
 
-for i in range(0, 69):
+for i in range(0, 70):
     scanFilePath = all_files[i].get("vol")
-    #scanFilePath = all_files[0].get("vol")
     print("scanfilepath: ", scanFilePath)
 
     # Load the scan and extract data using nibabel
@@ -154,32 +149,21 @@ for i in range(0, 69):
 
     key = ord('a')
 
-    # for i in scanArray_list:
-    # use scanArrayShape from extracted NIfTI scan data by NiBabel
     img = scanArray[scanArrayShape[0] // 2, :, :]
-    '''scanArrayShape = scanArray_list[i].shape
-    img = scanArray_list[i][scanArrayShape[0]//2,:,:]'''
-
     img2 = img
 
-    print(type(img))
-    #img2 = cv2.cvtColor(img2, cv2.COLOR_RGB2BGR)
-    #img_gray_bgr = cv2.cvtColor(img2, cv2.COLOR_GRAY2BGR)
-    #img2 = cv2.cvtColor(img_gray, img_rgb, CV_GRAY2RGB)
-    #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     cv2.namedWindow("main", cv2.WINDOW_NORMAL)
     cv2.setMouseCallback("main", draw_rect)
     cv2.setWindowProperty("main", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
     num = 0
-    # PRESS w to confirm save selected bounded box
+
+    # PRESS w to confirm and save selected bounded box
     while key != ord('w'):
         cv2.imshow("main", img)
         key = cv2.waitKey(1) & 0xFF
     print('Here are points:', x1, y1, x2, y2)
     if key == ord('w'):
-        #cv2.imwrite('snap' + repr(i) + '.png', img2[y1:y2, x1:x2])
         cv2.destroyAllWindows()
-        #print('Saved as snap.png')
         os.remove('monitor-1.png')
 
 
@@ -187,14 +171,10 @@ for i in range(0, 69):
     # Define the structure of the data
     csv_header = ['case', 'x1', 'y1', 'x2', 'y2']
 
-    # get case name
-    case = re.search('case_(.+?).nii', scanFilePath).group(1)
-    print(case)
-
     # Define the actual data
     box_data = [scanFilePath, x1, y1, x2, y2]
 
-    # 1. Open a new CSV file
+    # 1. Open a (new) CSV file
     file_exists = os.path.isfile('bounding_box_points.csv')
 
     with open('bounding_box_points.csv', 'a+') as file:
@@ -210,5 +190,4 @@ for i in range(0, 69):
 
         #5. close file
         file.close()
-
 
