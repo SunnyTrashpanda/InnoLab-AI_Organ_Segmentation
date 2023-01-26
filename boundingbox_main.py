@@ -164,8 +164,8 @@ model = UNet(
     kernel_size=3,
 ).to(device)
 
-#model.load_state_dict(torch.load(
-    #os.path.join(model_dir, "C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\results\\best_metric_model_BBox.pth")))
+model.load_state_dict(torch.load(
+    os.path.join(model_dir, "C:\\Users\\ChiaraFreistetter\\Desktop\\fh\\inno-organ_segmentation\\results\\best_metric_model_BBox.pth")))
 model.eval()
 
 # hier wird der optimization alg. sowie die metric als variable gesetzt
