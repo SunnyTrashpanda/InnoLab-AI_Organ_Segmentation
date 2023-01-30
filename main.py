@@ -81,30 +81,24 @@ train_files, validation_files = train_test_split(all_files, test_size=0.2, rando
 # print(validation_files)
 # print(train_files)
 
-# das sind werte die einfach vom bsp code sind, ob und wie man die berechnet weiß ich nicht
+
 a_max = 200
 a_min = -200
 spatial_size = [128, 128, 64]
 pixdim = (1.5, 1.5, 1.0)
 
-# damit sagen wir das wir auf dem gpu rechnen wollen ( achtung nicht mit allen grafikkarten kompatibel!!!)
 device = torch.device("cuda:0")
-# training set
-# transforms sind die filter die wir pro image anwenden um sie leichter erkenntba für das model zu machen
-# (wenn man die abgiebt erkennen wir meistens nix brauchbares)
+
 train_transforms = Compose(
     [
         LoadImaged(keys=["vol", "seg"]),
-        # monai funktion die auch medical files laden kann, enfern auch non medical datein
-        AddChanneld(keys=["vol", "seg"]),  # ich glaube das added farbchannels die man bei img braucht
-        Spacingd(keys=["vol", "seg"], pixdim=pixdim, mode=("bilinear", "nearest")),  # sorry weiß nicht was das macht
+        AddChanneld(keys=["vol", "seg"]),  
+        Spacingd(keys=["vol", "seg"], pixdim=pixdim, mode=("bilinear", "nearest")),  
         Orientationd(keys=["vol", "seg"], axcodes="RAS"),
-        # richtet das bild random neu aus (damit das model auch auf eve gedrehte img angewendet werden kann)
         ScaleIntensityRanged(keys=["vol"], a_min=a_min, a_max=a_max, b_min=0.0, b_max=1.0, clip=True),
-        # hier leider auch keinen plan
-        CropForegroundd(keys=["vol", "seg"], source_key="vol"),  # ebenso wie hier (sorry XD)
-        Resized(keys=["vol", "seg"], spatial_size=spatial_size),  # in einheitliche größe bringen
-        ToTensord(keys=["vol", "seg"], device=device),  # am schluss in einen tensor umwandeln
+        CropForegroundd(keys=["vol", "seg"], source_key="vol"),  
+        Resized(keys=["vol", "seg"], spatial_size=spatial_size), 
+        ToTensord(keys=["vol", "seg"], device=device),  
     ]
 )
 
